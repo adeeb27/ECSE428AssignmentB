@@ -27,7 +27,8 @@ public class testDefinitions {
     private final String RECIPIENT_BOX = "//*[@aria-label=\"To\"]";
     private final String SUBJECT_BOX = "//*[@aria-label=\"Subject\"]";
 
-    private final String ACCOUNT_ICON = "//*[@aria-label=\"Google Account: ecse testassignmentb\"]";
+    private final String ACCOUNT_ICON = "//*[@aria-label=\"Google Account: ecse testassignmentb  \n" +
+            "(testassignmentb428@gmail.com)\"]";
 
     private final String USER_MAIL = "testassignmentb428@gmail.com";
     private final String USER_PASSWORD = "hello123@";
@@ -108,12 +109,11 @@ public class testDefinitions {
     }
 
 
-
-
     public void signOut() {
-       //goTo("https://accounts.google.com/SignOutOptions?hl=en&continue=https://mail.google.com/mail&service=mail");
-        WebElement signOutBtn = (new WebDriverWait(driver, 5)).until(ExpectedConditions.elementToBeClickable(By.className("gb_x gb_Da gb_f")));
-        signOutBtn.click();
+        WebElement accountIcon = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath(ACCOUNT_ICON)));
+        accountIcon.click();
+//        WebElement signOutbtn = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@title='Sign out']")));
+//        signOutbtn.click();
     }
 
     @Then("the email should be sent with ([^\"]*) and ([^\"]*)")
@@ -126,14 +126,12 @@ public class testDefinitions {
         if ((driver.findElement(By.xpath("//div[text()='" + subjectOfEmail + "']")) != null) && (driver.findElement(By.xpath("//div[text()='" + temp + "']")) != null)) {
 
             System.out.println("Email was sent successfully!");
-            System.out.println(temp);
-
-
         }
         else {
             System.out.println("Email failed to send!");
         }
 
+        signOut();
 
     }
 
