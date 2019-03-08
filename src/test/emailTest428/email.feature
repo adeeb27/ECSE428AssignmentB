@@ -11,8 +11,8 @@ Feature: Email
     And I enter a <subject> and <body>
     And I attach an <attachment>
     And I press "Send"
-    Then the email should be sent with <subject>
+    Then the email should be sent with <subject> and <attachment>
 
     Examples:
-      | email | attachment | subject | body |
-      | testassignmentb428@gmail.com   | /Users/adeeb27/Downloads/Appa_eating_hay.gif  |  First Test  | First Test |
+      | email                          | attachment                                    | subject      | body       |
+      | testassignmentb428@gmail.com   | /Users/adeeb27/Downloads/Appa_eating_hay.gif  | First Test   | First Test |

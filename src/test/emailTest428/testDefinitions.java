@@ -11,6 +11,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
+
 public class testDefinitions {
 
     private WebDriver driver;
@@ -24,6 +26,9 @@ public class testDefinitions {
     private final String SIGNIN_PAGE_PASSWORD_NEXT_ID = "passwordNext";
     private final String RECIPIENT_BOX = "//*[@aria-label=\"To\"]";
     private final String SUBJECT_BOX = "//*[@aria-label=\"Subject\"]";
+
+    private final String ACCOUNT_ICON = "//*[@aria-label=\"Google Account: ecse testassignmentb\"]";
+
     private final String USER_MAIL = "testassignmentb428@gmail.com";
     private final String USER_PASSWORD = "hello123@";
 
@@ -64,13 +69,6 @@ public class testDefinitions {
         compose.click();
     }
 
-
-    @Then("the email should be sent")
-    public void theEmailShouldBeSent(String subjectOfEmail) {
-
-
-    }
-
     // Helper functions
     private void setupSeleniumWebDrivers() {
         if (driver == null) {
@@ -93,8 +91,6 @@ public class testDefinitions {
         WebElement recipient = (new WebDriverWait(driver, 5)).until(ExpectedConditions.elementToBeClickable(By.xpath(RECIPIENT_BOX)));
         recipient.sendKeys(email);
 
-
-
     }
 
     @And("I attach an ([^\"]*)")
@@ -112,19 +108,34 @@ public class testDefinitions {
     }
 
 
-    @Then("the email should be sent with ([^\"]*)")
-    public void theEmailShouldBeSentWithSubject(String subjectOfEmail) {
 
+
+    public void signOut() {
+       //goTo("https://accounts.google.com/SignOutOptions?hl=en&continue=https://mail.google.com/mail&service=mail");
+        WebElement signOutBtn = (new WebDriverWait(driver, 5)).until(ExpectedConditions.elementToBeClickable(By.className("gb_x gb_Da gb_f")));
+        signOutBtn.click();
+    }
+
+    @Then("the email should be sent with ([^\"]*) and ([^\"]*)")
+    public void theEmailShouldBeSentWithSubjectAndAttachment(String subjectOfEmail, String attachmentText) {
         WebElement sentMailBtn = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@title='Sent']")));
         sentMailBtn.click();
-        if (driver.findElement(By.xpath("//div[text()='" + subjectOfEmail + "']")) != null) {
+        File f = new File (attachmentText);
+        String temp = f.getName();
+
+        if ((driver.findElement(By.xpath("//div[text()='" + subjectOfEmail + "']")) != null) && (driver.findElement(By.xpath("//div[text()='" + temp + "']")) != null)) {
 
             System.out.println("Email was sent successfully!");
+            System.out.println(temp);
+
+
         }
         else {
             System.out.println("Email failed to send!");
         }
 
+
     }
+
 }
 
