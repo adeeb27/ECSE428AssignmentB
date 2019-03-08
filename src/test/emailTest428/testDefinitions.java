@@ -65,38 +65,9 @@ public class testDefinitions {
     }
 
 
-    @And("I compose an email to {string}")
-    public void iComposeAnEmailToTestAssignmentB428GmailCom(String email) {
-        WebElement recipient = (new WebDriverWait(driver, 5)).until(ExpectedConditions.elementToBeClickable(By.xpath(RECIPIENT_BOX)));
-        recipient.sendKeys(email);
-
-        WebElement subject_box = (new WebDriverWait(driver, 2)).until(ExpectedConditions.elementToBeClickable(By.xpath(SUBJECT_BOX)));
-        subject_box.sendKeys("Testing email at six");
-
-
-        WebElement body_box = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='Ar Au']//div")));
-        body_box.click();
-        body_box.sendKeys("Testing email");
-    }
-
-    @And("I attach a picture")
-    public void iAttachAPicture() {
-        driver.findElement(By.name("Filedata")).sendKeys("/Users/adeeb27/Downloads/Appa_eating_hay.gif");
-    }
-
-
-
     @Then("the email should be sent")
-    public void theEmailShouldBeSent() {
-        WebElement sentMailBtn = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@title='Sent']")));
-        sentMailBtn.click();
-        if (driver.findElement(By.xpath("//div[text()='Testing email at six']")) != null) {
+    public void theEmailShouldBeSent(String subjectOfEmail) {
 
-            System.out.println("Email was sent successfully!");
-        }
-        else {
-            System.out.println("Email failed to send!");
-        }
 
     }
 
@@ -117,5 +88,43 @@ public class testDefinitions {
         }
     }
 
+    @And("I compose an email to ([^\"]*)")
+    public void  iComposeAnEmailToEmail(String email) {
+        WebElement recipient = (new WebDriverWait(driver, 5)).until(ExpectedConditions.elementToBeClickable(By.xpath(RECIPIENT_BOX)));
+        recipient.sendKeys(email);
+
+
+
+    }
+
+    @And("I attach an ([^\"]*)")
+    public void iAttachAnAttachment(String filename) {
+        driver.findElement(By.name("Filedata")).sendKeys(filename);
+    }
+
+    @And("I enter a ([^\"]*) and ([^\"]*)")
+    public void iEnterASubjectAndBody(String body, String subject) {
+        WebElement body_box = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='Ar Au']//div")));
+        body_box.click();
+        body_box.sendKeys(body);
+        WebElement subject_box = (new WebDriverWait(driver, 2)).until(ExpectedConditions.elementToBeClickable(By.xpath(SUBJECT_BOX)));
+        subject_box.sendKeys(subject);
+    }
+
+
+    @Then("the email should be sent with ([^\"]*)")
+    public void theEmailShouldBeSentWithSubject(String subjectOfEmail) {
+
+        WebElement sentMailBtn = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@title='Sent']")));
+        sentMailBtn.click();
+        if (driver.findElement(By.xpath("//div[text()='" + subjectOfEmail + "']")) != null) {
+
+            System.out.println("Email was sent successfully!");
+        }
+        else {
+            System.out.println("Email failed to send!");
+        }
+
+    }
 }
 

@@ -2,12 +2,17 @@
 Feature: Email
   # Enter feature description here
 
-  Scenario: Login
-    # Enter steps here
+  Scenario Outline: Normal Flow
+
     Given I am logged in
     And I am on the Gmail main page
     When I press "Compose"
-    And I compose an email to "testassignmentb428@gmail.com"
-    And I attach a picture
+    And I compose an email to <email>
+    And I enter a <subject> and <body>
+    And I attach an <attachment>
     And I press "Send"
-    Then the email should be sent
+    Then the email should be sent with <subject>
+
+    Examples:
+      | email | attachment | subject | body |
+      | testassignmentb428@gmail.com   | /Users/adeeb27/Downloads/Appa_eating_hay.gif  |  First Test  | First Test |
