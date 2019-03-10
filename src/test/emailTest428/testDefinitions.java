@@ -19,7 +19,7 @@ public class testDefinitions {
 
     private final String PATH_TO_WEBDRIVER = "/Users/adeeb27/Documents/University_Stuff/WINTER2019/ECSE428/AssignmentB/chromedriver";
     private final String SIGNIN_PAGE_URL = "https://accounts.google.com/signin/v2/identifier?continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&service=mail&sacu=1&rip=1&flowName=GlifWebSignIn&flowEntry=ServiceLogin";
-    private final String GMAIL_MAIN_PAGE = "https://mail.google.com/mail/u/0/#inbox";
+    private final String GMAIL_MAIN_PAGE = "https://mail.google.com/mail/#inbox";
     private final String SIGNIN_PAGE_USERNAME_ID = "identifierId";
     private final String SIGNIN_PAGE_USERNAME_NEXT_ID = "identifierNext";
     private final String SIGNIN_PAGE_PASSWORD_NAME = "password";
@@ -34,6 +34,7 @@ public class testDefinitions {
     private final String USER_PASSWORD = "hello123@";
 
     private String emailRecipient = "";
+    private String ERROR_BOX_TEXT = "The address \"hello\" in the \"To\" field was not recognized. Please make sure that all addresses are properly formed.";
 
     @Given("I am logged in")
     public void iAmLoggedIn() throws Throwable {
@@ -60,10 +61,13 @@ public class testDefinitions {
     @And("I am on the Gmail main page")
     public void iAmOnTheGmailMainPage() {
 
-        if (driver.getCurrentUrl().equals(GMAIL_MAIN_PAGE)) {
-            System.out.println("Logged In Successfully!");
-        }
+        while (true) {
+            if (driver.getCurrentUrl().equals(GMAIL_MAIN_PAGE)) {
+                System.out.println("Logged In Successfully!");
+                break;
+            }
 
+        }
     }
 
     @When("I press {string}")
@@ -117,7 +121,8 @@ public class testDefinitions {
         accountIcon.click();
         WebElement signOutbtn = (new WebDriverWait(driver, 30)).until(ExpectedConditions.presenceOfElementLocated(By.id("gb_71")));
         signOutbtn.click();
-
+        System.out.println("Logged out successfully!");
+        System.out.println("Closing browser...");
         driver.quit();
 
 
@@ -143,5 +148,28 @@ public class testDefinitions {
 
     }
 
+    @And("I compose an email to {string}")
+    public void iComposeAnEmailTo(String errorEmail) {
+        WebElement recipient = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath(RECIPIENT_BOX)));
+        recipient.sendKeys(errorEmail);
+    }
+
+    @And("I enter in the subject box {string}")
+    public void iEnterInTheSubjectBox(String subjectText) {
+        WebElement subject_box = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath(SUBJECT_BOX)));
+        subject_box.sendKeys(subjectText);
+    }
+
+    @Then("I should get an error")
+    public void iShouldGetAnError() {
+        if (driver.findElement(By.xpath("//div[text()='" + ERROR_BOX_TEXT + "']")) != null) {
+            System.out.println("Invalid Recipient test passed");
+            WebElement okaybtn = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.name("ok")));
+            okaybtn.click();
+            (new WebDriverWait(driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(By.className("Kj-JD-Jh")));
+
+            signOut();
+        }
+    }
 }
 

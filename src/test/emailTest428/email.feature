@@ -1,6 +1,5 @@
 # Created by adeeb27 at 2019-02-28
 Feature: Email
-  # Enter feature description here
 
   Scenario Outline: Normal Flow
 
@@ -20,3 +19,13 @@ Feature: Email
       | adeeb.amjad@mail.mcgill.ca    | /Users/adeeb27/Downloads/attachments/preview18.png | Third Test  | Third Test |
       | dibbo.ritwik@gmail.com        | /Users/adeeb27/Downloads/attachments/preview19.png  | Fourth Test  | Fourth Test |
       | intezhoha@gmail.com           | /Users/adeeb27/Downloads/attachments/Appa_eating_hay.gif | Fifth Test  | Fifth Test |
+
+    Scenario: Error Flow
+    #Invalid email email addresses, an example is address without "@" sign
+      Given I am logged in
+      And I am on the Gmail main page
+      When I press "Compose"
+      And I compose an email to "hello"
+      And I enter in the subject box "Error Test"
+      And I press "Send"
+      Then I should get an error
