@@ -33,6 +33,8 @@ public class testDefinitions {
     private final String USER_MAIL = "testassignmentb428@gmail.com";
     private final String USER_PASSWORD = "hello123@";
 
+    private String emailRecipient = "";
+
     @Given("I am logged in")
     public void iAmLoggedIn() throws Throwable {
         setupSeleniumWebDrivers();
@@ -89,7 +91,8 @@ public class testDefinitions {
 
     @And("I compose an email to ([^\"]*)")
     public void  iComposeAnEmailToEmail(String email) {
-        WebElement recipient = (new WebDriverWait(driver, 5)).until(ExpectedConditions.elementToBeClickable(By.xpath(RECIPIENT_BOX)));
+        emailRecipient = email;
+        WebElement recipient = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath(RECIPIENT_BOX)));
         recipient.sendKeys(email);
 
     }
@@ -104,27 +107,32 @@ public class testDefinitions {
         WebElement body_box = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='Ar Au']//div")));
         body_box.click();
         body_box.sendKeys(body);
-        WebElement subject_box = (new WebDriverWait(driver, 2)).until(ExpectedConditions.elementToBeClickable(By.xpath(SUBJECT_BOX)));
+        WebElement subject_box = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath(SUBJECT_BOX)));
         subject_box.sendKeys(subject);
     }
 
 
-    public void signOut() {
-        WebElement accountIcon = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath(ACCOUNT_ICON)));
+    public void signOut()  {
+        WebElement accountIcon = (new WebDriverWait(driver, 30)).until(ExpectedConditions.elementToBeClickable(By.xpath(ACCOUNT_ICON)));
         accountIcon.click();
-//        WebElement signOutbtn = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@title='Sign out']")));
-//        signOutbtn.click();
+        WebElement signOutbtn = (new WebDriverWait(driver, 30)).until(ExpectedConditions.presenceOfElementLocated(By.id("gb_71")));
+        signOutbtn.click();
+
+        driver.quit();
+
+
     }
 
     @Then("the email should be sent with ([^\"]*) and ([^\"]*)")
     public void theEmailShouldBeSentWithSubjectAndAttachment(String subjectOfEmail, String attachmentText) {
-        WebElement sentMailBtn = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@title='Sent']")));
+        WebElement sentMailBtn = (new WebDriverWait(driver, 30)).until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@title='Sent']")));
         sentMailBtn.click();
         File f = new File (attachmentText);
         String temp = f.getName();
 
         if ((driver.findElement(By.xpath("//div[text()='" + subjectOfEmail + "']")) != null) && (driver.findElement(By.xpath("//div[text()='" + temp + "']")) != null)) {
-
+            WebElement specificSentEmail = (new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@email=\"" + emailRecipient + "\"]/../.."))));
+            specificSentEmail.click();
             System.out.println("Email was sent successfully!");
         }
         else {

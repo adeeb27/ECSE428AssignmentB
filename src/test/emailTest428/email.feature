@@ -15,4 +15,8 @@ Feature: Email
 
     Examples:
       | email                          | attachment                                    | subject      | body       |
-      | testassignmentb428@gmail.com   | /Users/adeeb27/Downloads/Appa_eating_hay.gif  | First Test   | First Test |
+      | testassignmentb428@gmail.com   | /Users/adeeb27/Downloads/attachments/preview16.png | First Test   | First Test |
+      | djadeeb@gmail.com             | /Users/adeeb27/Downloads/attachments/preview17.png  | Second Test  | Second Test |
+      | adeeb.amjad@mail.mcgill.ca    | /Users/adeeb27/Downloads/attachments/preview18.png | Third Test  | Third Test |
+      | dibbo.ritwik@gmail.com        | /Users/adeeb27/Downloads/attachments/preview19.png  | Fourth Test  | Fourth Test |
+      | intezhoha@gmail.com           | /Users/adeeb27/Downloads/attachments/Appa_eating_hay.gif | Fifth Test  | Fifth Test |
