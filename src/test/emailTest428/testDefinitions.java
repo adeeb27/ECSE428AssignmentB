@@ -70,12 +70,6 @@ public class testDefinitions {
         }
     }
 
-    @When("I press {string}")
-    public void iPress(String composeButtonText) {
-        WebElement compose = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + composeButtonText + "']")));
-        compose.click();
-    }
-
     // Helper functions
     private void setupSeleniumWebDrivers() {
         if (driver == null) {
@@ -93,16 +87,8 @@ public class testDefinitions {
         }
     }
 
-    @And("I compose an email to ([^\"]*)")
-    public void  iComposeAnEmailToEmail(String email) {
-        emailRecipient = email;
-        WebElement recipient = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath(RECIPIENT_BOX)));
-        recipient.sendKeys(email);
-
-    }
-
-    @And("I attach an ([^\"]*)")
-    public void iAttachAnAttachment(String filename) {
+    @And("I attach a file ([^\"]*)")
+    public void iAttachAFile1(String filename) {
         driver.findElement(By.name("Filedata")).sendKeys(filename);
     }
 
@@ -148,8 +134,10 @@ public class testDefinitions {
 
     }
 
-    @And("I compose an email to {string}")
+    @When("I compose an email to {string}")
     public void iComposeAnEmailTo(String errorEmail) {
+        WebElement compose = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Compose']")));
+        compose.click();
         WebElement recipient = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath(RECIPIENT_BOX)));
         recipient.sendKeys(errorEmail);
     }
@@ -170,6 +158,50 @@ public class testDefinitions {
 
             signOut();
         }
+    }
+
+    @And("I {string} the email")
+    public void iTheEmail(String button) {
+        WebElement sendBtn = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + button + "']")));
+        sendBtn.click();
+        driver.switchTo().alert().accept();
+    }
+
+    @When("I compose an email to ([^\"]*)")
+    public void iAnEmailToEmail(String email) {
+        compose();
+        emailRecipient = email;
+        WebElement recipient = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath(RECIPIENT_BOX)));
+        recipient.sendKeys(email);
+    }
+
+    private void compose() {
+        WebElement compose = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Compose']")));
+        compose.click();
+    }
+
+    @And("I attach a file {string}")
+    public void iAttachAFile(String attachment) {
+        driver.findElement(By.name("Filedata")).sendKeys(attachment);
+    }
+
+    @Then("the email should be sent with {string}")
+    public void theEmailShouldBeSent(String attachmentText) {
+        WebElement sentMailBtn = (new WebDriverWait(driver, 30)).until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@title='Sent']")));
+        sentMailBtn.click();
+        File f = new File (attachmentText);
+        String temp = f.getName();
+
+        if (driver.findElement(By.xpath("//div[text()='" + temp + "']")) != null) {
+            WebElement specificSentEmail = (new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@email=\"" + "adeeb.amjad@mail.mcgill.ca" + "\"]/../.."))));
+            specificSentEmail.click();
+            System.out.println("Email was sent successfully!");
+        }
+        else {
+            System.out.println("Email failed to send!");
+        }
+
+        signOut();
     }
 }
 
