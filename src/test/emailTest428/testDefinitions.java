@@ -70,26 +70,12 @@ public class testDefinitions {
         }
     }
 
-    // Helper functions
-    private void setupSeleniumWebDrivers() {
-        if (driver == null) {
-            System.out.println("Setting up ChromeDriver... ");
-            System.setProperty("webdriver.chrome.driver", PATH_TO_WEBDRIVER);
-            driver = new ChromeDriver();
-            System.out.print("Done!\n");
-        }
-    }
-
-    private void goTo(String url) {
-        if (driver != null) {
-            System.out.println("Going to " + url);
-            driver.get(url);
-        }
-    }
-
-    @And("I attach a file ([^\"]*)")
-    public void iAttachAFile1(String filename) {
-        driver.findElement(By.name("Filedata")).sendKeys(filename);
+    @When("I compose an email to ([^\"]*)")
+    public void iAnEmailToEmail(String email) {
+        compose();
+        emailRecipient = email;
+        WebElement recipient = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath(RECIPIENT_BOX)));
+        recipient.sendKeys(email);
     }
 
     @And("I enter a ([^\"]*) and ([^\"]*)")
@@ -101,16 +87,15 @@ public class testDefinitions {
         subject_box.sendKeys(subject);
     }
 
+    @And("I attach a file ([^\"]*)")
+    public void iAttachAFile1(String filename) {
+        driver.findElement(By.name("Filedata")).sendKeys(filename);
+    }
 
-    public void signOut()  {
-        WebElement accountIcon = (new WebDriverWait(driver, 30)).until(ExpectedConditions.elementToBeClickable(By.xpath(ACCOUNT_ICON)));
-        accountIcon.click();
-        WebElement signOutbtn = (new WebDriverWait(driver, 30)).until(ExpectedConditions.presenceOfElementLocated(By.id("gb_71")));
-        signOutbtn.click();
-        System.out.println("Logged out successfully!");
-        System.out.println("Closing browser...");
-        driver.quit();
-
+    @And("I {string} the email with subject and body")
+    public void iTheEmailWithSubjectAndBody(String sendBtnText) {
+        WebElement sendBtn = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + sendBtnText + "']")));
+        sendBtn.click();
 
     }
 
@@ -165,22 +150,9 @@ public class testDefinitions {
     public void iTheEmail(String button) {
         WebElement sendBtn = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + button + "']")));
         sendBtn.click();
-
-
     }
 
-    @When("I compose an email to ([^\"]*)")
-    public void iAnEmailToEmail(String email) {
-        compose();
-        emailRecipient = email;
-        WebElement recipient = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath(RECIPIENT_BOX)));
-        recipient.sendKeys(email);
-    }
 
-    private void compose() {
-        WebElement compose = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Compose']")));
-        compose.click();
-    }
 
     @And("I attach a file {string}")
     public void iAttachAFile(String attachment) {
@@ -213,11 +185,37 @@ public class testDefinitions {
         driver.switchTo().alert().accept();
     }
 
-    @And("I {string} the email with subject and body")
-    public void iTheEmailWithSubjectAndBody(String sendBtnText) {
-        WebElement sendBtn = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + sendBtnText + "']")));
-        sendBtn.click();
 
+    // Helper functions
+    private void setupSeleniumWebDrivers() {
+        if (driver == null) {
+            System.out.println("Setting up ChromeDriver... ");
+            System.setProperty("webdriver.chrome.driver", PATH_TO_WEBDRIVER);
+            driver = new ChromeDriver();
+            System.out.println("Done!");
+        }
+    }
+
+    private void goTo(String url) {
+        if (driver != null) {
+            System.out.println("Going to " + url);
+            driver.get(url);
+        }
+    }
+
+    public void signOut()  {
+        WebElement accountIcon = (new WebDriverWait(driver, 30)).until(ExpectedConditions.elementToBeClickable(By.xpath(ACCOUNT_ICON)));
+        accountIcon.click();
+        WebElement signOutbtn = (new WebDriverWait(driver, 30)).until(ExpectedConditions.presenceOfElementLocated(By.id("gb_71")));
+        signOutbtn.click();
+        System.out.println("Logged out successfully!");
+        System.out.println("Closing browser...");
+        driver.quit();
+    }
+
+    private void compose() {
+        WebElement compose = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Compose']")));
+        compose.click();
     }
 }
 
