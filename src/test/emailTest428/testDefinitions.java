@@ -151,11 +151,12 @@ public class testDefinitions {
     @Then("I should get an error")
     public void iShouldGetAnError() {
         if (driver.findElement(By.xpath("//div[text()='" + ERROR_BOX_TEXT + "']")) != null) {
+
             System.out.println("Invalid Recipient test passed");
             WebElement okaybtn = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.name("ok")));
             okaybtn.click();
             (new WebDriverWait(driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(By.className("Kj-JD-Jh")));
-
+           // driver.switchTo().alert().accept();
             signOut();
         }
     }
@@ -164,7 +165,8 @@ public class testDefinitions {
     public void iTheEmail(String button) {
         WebElement sendBtn = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + button + "']")));
         sendBtn.click();
-        driver.switchTo().alert().accept();
+
+
     }
 
     @When("I compose an email to ([^\"]*)")
@@ -193,7 +195,7 @@ public class testDefinitions {
         String temp = f.getName();
 
         if (driver.findElement(By.xpath("//div[text()='" + temp + "']")) != null) {
-            WebElement specificSentEmail = (new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@email=\"" + "adeeb.amjad@mail.mcgill.ca" + "\"]/../.."))));
+            WebElement specificSentEmail = (new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@email=\"" + "adrianguindani@gmail.com" + "\"]/../.."))));
             specificSentEmail.click();
             System.out.println("Email was sent successfully!");
         }
@@ -202,6 +204,20 @@ public class testDefinitions {
         }
 
         signOut();
+    }
+
+    @And("I {string} the email with no subject and body")
+    public void iTheEmailWithNoSubjectAndBody(String sendBtnText) {
+        WebElement sendBtn = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + sendBtnText + "']")));
+        sendBtn.click();
+        driver.switchTo().alert().accept();
+    }
+
+    @And("I {string} the email with subject and body")
+    public void iTheEmailWithSubjectAndBody(String sendBtnText) {
+        WebElement sendBtn = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + sendBtnText + "']")));
+        sendBtn.click();
+
     }
 }
 
